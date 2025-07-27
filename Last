@@ -1,7 +1,5 @@
---[[
-🌈 Egg Randomizer GUI (Stripped version)
-By: RenScriptHub
-Only includes: Hatch, ESP, Auto Reroll
+--[[ 🌌 Egg Randomizer🎲 GUI
+Made By: RenScriptHub | 25s Auto Reroll + Galaxy Background + Countdown Display
 ]]
 
 local Players = game:GetService("Players")
@@ -9,15 +7,15 @@ local Workspace = game:GetService("Workspace")
 local player = Players.LocalPlayer
 local playerGui = player:WaitForChild("PlayerGui")
 
--- === Egg Pools
+-- === Egg Pools (Cleaned)
 local eggPools = {
 	["Common Egg"] = {"Bunny", "Chick", "Mouse"},
 	["Bug Egg"] = {"Snail", "Caterpillar", "Giant Ant"},
 	["Night Egg"] = {"Hedgehog", "Frog", "Echo Frog", "Blood Hedgehog", "Blood Kiwi"},
 	["Mythical Egg"] = {"Squirrel", "Red Giant Ant", "Grey Mouse", "Brown Mouse"},
-	["Paradise Egg"] = {"Ostrich", "Peacock", "Capybara", "Mimic Octopus"},
+	["Paradise Egg"] = {"Ostrich", "Peacock", "Capybara"},
 	["Oasis Egg"] = {"Meerkat", "Sandsnake", "Oxolotl"},
-	["Primal Egg"] = {"Brontosaurus", "Spinosaurus", "Pterodactyl", "Raptor"},
+	["Primal Egg"] = {"Brontosaurus", "Pterodactyl", "Raptor"},
 	["Dinosaur Egg"] = {"Brontosaurus", "Raptor", "Pterodactyl"}
 }
 
@@ -26,62 +24,83 @@ local petRarity = {
 	["Snail"] = "Common", ["Caterpillar"] = "Common", ["Frog"] = "Common",
 	["Giant Ant"] = "Rare", ["Hedgehog"] = "Rare", ["Grey Mouse"] = "Rare",
 	["Peacock"] = "Rare", ["Meerkat"] = "Rare",
-	["Echo Frog"] = "Epic", ["Blood Hedgehog"] = "Epic", ["Mimic Octopus"] = "Epic",
-	["Sandsnake"] = "Epic", ["Spinosaurus"] = "Epic",
+	["Echo Frog"] = "Epic", ["Blood Hedgehog"] = "Epic", ["Sandsnake"] = "Epic",
 	["Blood Kiwi"] = "Legendary", ["Red Giant Ant"] = "Legendary",
-	["Brontosaurus"] = "Legendary", ["Pterodactyl"] = "Legendary", ["Raptor"] = "Legendary"
+	["Brontosaurus"] = "Legendary", ["Pterodactyl"] = "Legendary", ["Raptor"] = "Legendary",
+	["Squirrel"] = "Common", ["Brown Mouse"] = "Common", ["Ostrich"] = "Common", ["Capybara"] = "Common", ["Oxolotl"] = "Common"
 }
 
-local eggNames = {} for name in pairs(eggPools) do table.insert(eggNames, name) end
+local eggNames = {}
+for name in pairs(eggPools) do table.insert(eggNames, name) end
 
 -- === GUI Setup
 local gui = Instance.new("ScreenGui", playerGui)
 gui.Name = "RenEggGUI"
+gui.IgnoreGuiInset = true
 gui.ResetOnSpawn = false
 
+-- 🌌 Galaxy Background
+local bg = Instance.new("ImageLabel", gui)
+bg.Size = UDim2.new(1, 0, 1, 0)
+bg.Position = UDim2.new(0, 0, 0, 0)
+bg.BackgroundTransparency = 1
+bg.Image = "rbxassetid://13139558070" -- Galaxy asset
+bg.ImageTransparency = 0.2
+bg.ZIndex = 0
+
+-- 🎛 Frame with Gradient
 local frame = Instance.new("Frame", gui)
-frame.Size = UDim2.new(0, 250, 0, 260)
-frame.Position = UDim2.new(0, 20, 0.25, 0)
-frame.BackgroundColor3 = Color3.fromRGB(30, 0, 40)
+frame.Size = UDim2.new(0, 200, 0, 250)
+frame.Position = UDim2.new(0, 20, 0.3, 0)
+frame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 frame.BorderSizePixel = 0
 frame.Active = true
 frame.Draggable = true
-Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 10)
+frame.ZIndex = 1
+Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 8)
 
+-- 🌈 Gradient Background
+local gradient = Instance.new("UIGradient", frame)
+gradient.Rotation = 45
+gradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(80, 0, 150)),
+	ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 120, 255)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 0, 100))
+})
+
+-- 📋 Layout
+local layout = Instance.new("UIListLayout", frame)
+layout.Padding = UDim.new(0, 6)
+layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+-- 🧾 Title
 local title = Instance.new("TextLabel", frame)
 title.Size = UDim2.new(1, 0, 0, 40)
-title.Text = "😈 Egg Randomizer\nMade by RenScriptHub"
+title.Text = "Egg Randomizer🎲\nMade By: RenScriptHub"
 title.Font = Enum.Font.GothamBold
-title.TextSize = 16
+title.TextSize = 14
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.TextWrapped = true
 title.BackgroundTransparency = 1
-
-local layout = Instance.new("UIListLayout", frame)
-layout.Padding = UDim.new(0, 8)
-layout.SortOrder = Enum.SortOrder.LayoutOrder
-layout.FillDirection = Enum.FillDirection.Vertical
 title.LayoutOrder = 0
 
--- === Button Creator
+-- 🔘 Button Creator
 local function makeBtn(text, color, callback)
 	local btn = Instance.new("TextButton", frame)
-	btn.Size = UDim2.new(1, -20, 0, 45)
-	btn.Position = UDim2.new(0, 10, 0, 0)
+	btn.Size = UDim2.new(1, -16, 0, 30)
+	btn.Position = UDim2.new(0, 8, 0, 0)
 	btn.BackgroundColor3 = color
 	btn.Text = text
 	btn.Font = Enum.Font.GothamBold
 	btn.TextScaled = true
 	btn.TextColor3 = Color3.new(1, 1, 1)
-	btn.AutoButtonColor = true
-	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 8)
-	btn.MouseButton1Click:Connect(function()
-		callback(btn)
-	end)
+	btn.ZIndex = 2
+	Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
+	btn.MouseButton1Click:Connect(function() callback(btn) end)
 	return btn
 end
 
--- === Pet Reroll
+-- 🐣 Hatch Pets
 local function rollPet(egg)
 	local list = eggPools[egg.Name]
 	if not list then return end
@@ -91,8 +110,7 @@ local function rollPet(egg)
 	value.Value = pet
 end
 
--- === Hatch Button
-makeBtn("🐣 Hatch Random Pets", Color3.fromRGB(255, 0, 150), function()
+makeBtn("🐣 Hatch Pets", Color3.fromRGB(255, 0, 150), function()
 	for _, egg in ipairs(Workspace:GetDescendants()) do
 		if egg:IsA("Model") and eggPools[egg.Name] then
 			rollPet(egg)
@@ -100,7 +118,7 @@ makeBtn("🐣 Hatch Random Pets", Color3.fromRGB(255, 0, 150), function()
 	end
 end)
 
--- === ESP Button
+-- 🔵 ESP Toggle
 local espEnabled = false
 local function toggleESP(state)
 	for _, egg in ipairs(Workspace:GetDescendants()) do
@@ -108,7 +126,6 @@ local function toggleESP(state)
 			local part = egg:FindFirstChildWhichIsA("BasePart")
 			local existing = egg:FindFirstChild("EggESP")
 			if existing then existing:Destroy() end
-
 			if state and part then
 				local gui = Instance.new("BillboardGui", egg)
 				gui.Name = "EggESP"
@@ -125,17 +142,9 @@ local function toggleESP(state)
 				label.TextWrapped = true
 				label.TextColor3 = Color3.fromRGB(255, 255, 0)
 
-				local display = "🥚 " .. egg.Name
 				local val = egg:FindFirstChild("CurrentPet")
-
-				if val then
-					local rarity = petRarity[val.Value] or "Common"
-					display = display .. "\n🐾 " .. val.Value .. " [" .. rarity .. "]"
-				else
-					display = display .. "\n🐾 Not rolled yet"
-				end
-
-				label.Text = display
+				local rarity = val and petRarity[val.Value] or "Common"
+				label.Text = "🥚 " .. egg.Name .. "\n🐾 " .. (val and val.Value or "Not rolled") .. " [" .. rarity .. "]"
 			end
 		end
 	end
@@ -147,23 +156,50 @@ makeBtn("⚪ ESP: OFF", Color3.fromRGB(60, 60, 60), function(btn)
 	toggleESP(espEnabled)
 end)
 
--- === Auto Reroll
+-- 🔁 Auto Reroll with 25s Timer
 local autoEnabled = false
-makeBtn("🔄 Auto Randomize: OFF", Color3.fromRGB(50, 200, 100), function(btn)
+local countdown = 25
+local autoBtn
+
+local function updateESPCountdown()
+	if not espEnabled then return end
+	for _, egg in ipairs(Workspace:GetDescendants()) do
+		if egg:IsA("Model") and table.find(eggNames, egg.Name) then
+			local tag = egg:FindFirstChild("EggESP")
+			if tag and tag:IsA("BillboardGui") then
+				local label = tag:FindFirstChildWhichIsA("TextLabel")
+				if label then
+					local pet = egg:FindFirstChild("CurrentPet")
+					local rarity = pet and petRarity[pet.Value] or "?"
+					label.Text = "🥚 " .. egg.Name .. "\n🐾 " .. (pet and pet.Value or "Not rolled") .. " [" .. rarity .. "]\n⏱ " .. countdown .. "s"
+				end
+			end
+		end
+	end
+end
+
+autoBtn = makeBtn("🔄 Auto: OFF", Color3.fromRGB(50, 200, 100), function(btn)
 	autoEnabled = not autoEnabled
-	btn.Text = autoEnabled and "🔁 Auto Randomize: ON" or "🔄 Auto Randomize: OFF"
+	countdown = 25
+	btn.Text = autoEnabled and ("🔁 Auto: " .. countdown .. "s") or "🔄 Auto: OFF"
 end)
 
 task.spawn(function()
 	while true do
 		if autoEnabled then
-			for _, egg in ipairs(Workspace:GetDescendants()) do
-				if egg:IsA("Model") and eggPools[egg.Name] then
-					rollPet(egg)
+			countdown -= 1
+			if countdown <= 0 then
+				countdown = 25
+				for _, egg in ipairs(Workspace:GetDescendants()) do
+					if egg:IsA("Model") and eggPools[egg.Name] then
+						rollPet(egg)
+					end
 				end
+				if espEnabled then toggleESP(true) end
 			end
-			if espEnabled then toggleESP(true) end
+			autoBtn.Text = "🔁 Auto: " .. countdown .. "s"
+			updateESPCountdown()
 		end
-		task.wait(5)
+		task.wait(1)
 	end
 end)
